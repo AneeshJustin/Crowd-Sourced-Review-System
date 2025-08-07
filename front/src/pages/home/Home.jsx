@@ -93,33 +93,45 @@ const featuredMovies = [
 ];
 
 export default function Home() {
-  const [messages, setMessages] = useState([
-    { from: "bot", text: "Hi! Ask me anything about movies or tech." },
+const [messages, setMessages] = useState([
+  { from: "bot", text: "Hi! Ask me anything about movies or tech." },
+]);
+const [input, setInput] = useState("");
+
+const handleSend = async () => {
+  if (!input.trim()) return;
+
+  const userMessage = { from: "user", text: input };
+  setMessages((prev) => [...prev, userMessage]);
+  setInput("");
+
+  // Show temporary "typing..." message
+  setMessages((prev) => [
+    ...prev,
+    { from: "bot", text: "Typing..." }
   ]);
-  const [input, setInput] = useState("");
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  try {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/chat`, {
+      message: input,
+    });
 
-    const userMessage = { from: "user", text: input };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput("");
+    const botReply = res.data.message || "No response from Gemini.";
+    
+    // Replace "Typing..." with actual bot message
+    setMessages((prev) => [
+      ...prev.slice(0, -1),
+      { from: "bot", text: botReply },
+    ]);
+  } catch (err) {
+    console.error("Chat error:", err);
+    setMessages((prev) => [
+      ...prev.slice(0, -1),
+      { from: "bot", text: "Oops! Something went wrong. Try again." },
+    ]);
+  }
+};
 
-    try {
-      const res = await axios.post("http://localhost:5000/api/chat", {
-        message: input,
-      });
-
-      const botMessage = { from: "bot", text: res.data.reply };
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (err) {
-      console.error("Chat error:", err);
-      setMessages((prev) => [
-        ...prev,
-        { from: "bot", text: "Oops! Something went wrong. Try again." },
-      ]);
-    }
-  };
 
   return (
     <Box sx={{ backgroundColor: "#f9fafb", minHeight: "100vh" }}>

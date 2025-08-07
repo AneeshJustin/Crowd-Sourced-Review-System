@@ -8,7 +8,7 @@ const ProfilePage = () => {
         <Card sx={{ width: 350, padding: 3, textAlign: 'center' }}>
           <Avatar
             alt="User Avatar"
-            src="profile.jpg"
+            src="/profile.jpg"
             sx={{ width: 100, height: 100, margin: '0 auto', marginBottom: 2 }}
           />
           <CardContent>
