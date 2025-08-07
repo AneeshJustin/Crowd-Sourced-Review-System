@@ -34,9 +34,11 @@ export default function AuthForm({ onLogin }) {
     setLoading(true);
 
     try {
+      const API_BASE = process.env.REACT_APP_API_URL;
+
       const url = isSignup
-        ? "http://localhost:5000/api/auth/register"
-        : "http://localhost:5000/api/auth/login";
+        ? `${API_BASE}/api/auth/register`
+        : `${API_BASE}/api/auth/login`;
 
       const payload = isSignup
         ? {
